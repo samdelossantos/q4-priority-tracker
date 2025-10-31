@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Q4 Quarter Ahead: The Big Prios</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        /* Define Google color palette for use in the app */
+        :root {
+            --google-blue: #4285F4;
+            --google-green: #0F9D58;
+            --google-red: #DB4437;
+            --google-yellow: #F4B400;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* Generic styles for list items */
+        .priority-item {
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+            border-left: 4px solid transparent;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Dynamic active state styling */
+        .priority-item.active {
+            font-weight: 600;
+            background-color: var(--active-bg);
+            border-color: var(--active-border);
+            color: var(--active-color);
+        }
+
+        /* Dynamic color for panel elements */
+        .dynamic-text-color {
+            color: var(--active-border);
+        }
+
+        .dynamic-border-color {
+            border-color: var(--active-border);
+        }
+        
+        /* Accordion styles */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .accordion-content.open {
+            max-height: 500px; /* Sufficiently large value for smooth transition */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+        <!-- Header -->
+        <header class="mb-8">
+            <h1 class="text-4xl font-extrabold text-gray-900">Q4 Quarter Ahead: The Big Prios</h1>
+            <p class="text-sm text-gray-500 mt-1">Interactive Priority Breakdown</p>
+        </header>
+
+        <!-- Main Content Grid -->
+        <div class="flex flex-col lg:flex-row gap-8">
+
+            <!-- Left Column: Priority Selection -->
+            <div id="priority-list" class="lg:w-1/3 bg-white shadow-xl rounded-xl p-4 lg:p-6 border border-gray-100">
+                <h2 class="text-xl font-semibold mb-4 text-google-blue">Priority Groups</h2>
+                <!-- Dynamic list items will be inserted here -->
+            </div>
+
+            <!-- Right Column: Details & Dropdowns -->
+            <div id="details-panel" class="lg:w-2/3 bg-white shadow-xl rounded-xl p-4 lg:p-6 border border-gray-100 min-h-[400px]">
+                <h2 id="panel-title" class="text-2xl font-bold text-gray-900 mb-4">Select a Priority to View Details</h2>
+                <div id="panel-content" class="space-y-6">
+                    <!-- Content will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data structure derived from the image
+        const prioritiesData = [
+            {
+                id: 'compete-grow',
+                title: 'Compete & Grow',
+                color: 'var(--google-blue)',
+                icon: '<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 010-5H6m12 5h1.5a2.5 2.5 0 000-5H18m-6 11V9.5M12 9.5L7.5 12M12 9.5l4.5 2M10 18.5a.5.5 0 011 0V21M14 18.5a.5.5 0 00-1 0V21M5 22h14"/></svg>',
+                startingPoint: 'Compete Academy has wrapped for the year, and materials remain available on demand at go/alcs-compete.',
+                endGoal: 'A clear 2026 Compete strategy and learner journey defined with curriculum content ready for activation in Q1’26 in alignment with ALCS Plays strategy',
+                poFocus: [
+                    'Architect 2026 Compete Strategy anchored on a Game On Sales Ready Week concept and Just in Time knowledge (short-form content), bringing competitor-agnostic knowledge and GWS-aligned skills together with our ALCS plays to streamline learner journey',
+                    'Define Compete Curriculum for H1’26 including seller learning agendas and alignment with Plays activation strategy',
+                    'Scale AI practice w/ greater yooldii adoption (+80% reach goal, 50% repeat usage goal)',
+                    'Solidify Sizing Process to scale TO to all ALCS customers (T1-T3) in ’26',
+                    'Integrate into Annual + Quarterly Workflows to ensure annual TO is accurately logged and tracked against quarterly planning and pipeline (starting 12/1 for all of ALCS)',
+                    'Define Value Delivered (VD) in partnership with PGTM and build into E2E TO sales motion to drive msmt feedback loop; secure DMSM leadership alignment on role of Al in sizing + VD',
+                    'Refresh ’26 TO metrics & Hub resources based on new prios, infra, and refreshed Playbook'
+                ],
+                knownUnknowns: 'Global (GCE) compete content and curriculum TBA; TBD how Mastery will support regional activations and practice'
+            },
+            {
+                id: 'execute-efficiently',
+                title: 'Execute Efficiently',
+                color: 'var(--google-green)',
+                icon: '<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+                startingPoint: 'Gearing up to scale Total Opportunity in 2026 to unlock greater revenue coverage and develop more concrete sales ops and rigor.',
+                endGoal: 'All sectors & geos recording calls to meet 50% recording rate OKR (taken on by Sean & VP). Broader GP adoption. Continue to scale and pilot productivity tools.',
+                poFocus: [
+                    'Conversational Intelligence: Drive adoption of call recording across all sector+ geos + pilot new use cases for insights (e.g., coaching)',
+                    'Sales Assistant: Encourage use of the tool (100% avail. in Nov) & improve results of queries',
+                    'Growth Planner: Launch EOY (go-to for all headroom sizing, replacing gTech support in 2026) moving from 70% availability to all companies. Encourage completion of “Game On” training.',
+                    'AI4CI: Scale pilot to 200-300 users'
+                ],
+                knownUnknowns: 'Complexities of scaling TO to our T2/T3 accounts with limited resource (gTech and AL) support'
+            },
+            {
+                id: 'ads-product',
+                title: 'Ads Product',
+                color: 'var(--google-red)',
+                icon: '<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>',
+                startingPoint: '$305M ARR unlocked via Safe Revenue policy launches.',
+                endGoal: 'Accelerate ads growth and policy enablement through Safe Revenue launches + improve advt. experience.',
+                poFocus: [
+                    'Safe Rev Launches: Execute Q4 launches: IP Debt Services, Gambling and Crypto expansion, Agency Audiences on YT, Gum Accessories beta, and Affinity Audiences for Alcohol.',
+                    'Safe Rev Ops: Deliver Personalized Ads Revamp Strategy, RevUp Commercialization Playbook with new sales estimate methodology and comms plan, and H1’26 RevUp request prio cycle.'
+                ],
+                knownUnknowns: 'Unpredictability in US administration could delay or impact prioritized launches'
+            },
+            {
+                id: '2026-planning',
+                title: '2026 Planning',
+                color: 'var(--google-yellow)',
+                icon: '<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M9 13h6"/><path d="M9 17h6"/></svg>',
+                startingPoint: 'Early views on 2026 priorities defined',
+                endGoal: 'ALCS 2026 Plans aligned with AMG +Xfms to ensure ALCS is prepare to execute',
+                poFocus: [
+                    '2026 Planning Staging: Finalize scope, coordinate downstream impacts, prep for execution',
+                    'Develop a leaner structure for People Pillars in 2026 that is aligned to GBO + ALCS prios',
+                    'Collect a final round of feedback (customer satisfaction though Pulse Surveys + employee sentiment feedback through Ascend Pulse + State of Coaching) to help inform planning'
+                ],
+                knownUnknowns: 'GBD people plan published later in Q4.'
+            }
+        ];
+
+        const listContainer = document.getElementById('priority-list');
+        const detailsPanel = document.getElementById('details-panel');
+        const panelTitle = document.getElementById('panel-title');
+        const panelContent = document.getElementById('panel-content');
+
+        let activePriorityId = null;
+
+        /**
+         * Renders the priority list in the left column.
+         */
+        function renderPriorityList() {
+            listContainer.innerHTML = `<h2 class="text-xl font-semibold mb-4 text-google-blue">Priority Groups</h2>`;
+            prioritiesData.forEach(priority => {
+                const item = document.createElement('div');
+                item.className = 'priority-item p-3 mb-2 rounded-lg text-gray-700 hover:bg-gray-100';
+                item.id = `item-${priority.id}`;
+                item.dataset.id = priority.id;
+                item.dataset.color = priority.color;
+
+                // Add the icon and title text
+                item.innerHTML = `
+                    <span style="color: ${priority.color};">${priority.icon}</span>
+                    <span>${priority.title}</span>
+                `;
+
+                item.addEventListener('click', () => {
+                    selectPriority(priority.id);
+                });
+
+                listContainer.appendChild(item);
+            });
+            // Automatically select the first item on load
+            if (prioritiesData.length > 0) {
+                selectPriority(prioritiesData[0].id);
+            } else {
+                panelTitle.textContent = "No Priorities Available";
+            }
+        }
+
+        /**
+         * Populates the details panel based on the selected priority.
+         * @param {string} id - The ID of the selected priority.
+         */
+        function selectPriority(id) {
+            const selectedPriority = prioritiesData.find(p => p.id === id);
+            if (!selectedPriority) return;
+
+            const selectedColor = selectedPriority.color;
+            const lightColor = selectedColor.replace(')', ', 0.1)'); // Create a lighter background for the active list item
+            
+            // Set dynamic CSS variables for the color theme
+            document.documentElement.style.setProperty('--active-border', selectedColor);
+            document.documentElement.style.setProperty('--active-bg', lightColor);
+            document.documentElement.style.setProperty('--active-color', selectedColor);
+
+
+            // Update active state in the list
+            if (activePriorityId) {
+                const oldItem = document.getElementById(`item-${activePriorityId}`);
+                oldItem?.classList.remove('active');
+                oldItem?.classList.remove('text-white');
+                oldItem?.classList.add('text-gray-700');
+            }
+            
+            const newItem = document.getElementById(`item-${id}`);
+            newItem.classList.add('active');
+            newItem.classList.remove('text-gray-700');
+            
+            activePriorityId = id;
+
+            // Update details panel
+            panelTitle.textContent = selectedPriority.title;
+            panelTitle.classList.add('dynamic-text-color'); // Apply theme color to title
+            panelContent.innerHTML = ''; // Clear previous content
+
+            // Function to create a detail section
+            const createDetailSection = (title, content) => `
+                <div class="border-b pb-4">
+                    <h3 class="text-lg font-semibold dynamic-text-color mb-1">${title}</h3>
+                    <p class="text-gray-700">${content}</p>
+                </div>
+            `;
+
+            // 1. Q4 Starting Point
+            panelContent.innerHTML += createDetailSection(
+                'Q4 Starting Point',
+                selectedPriority.startingPoint
+            );
+
+            // 2. Q4 End Goal
+            panelContent.innerHTML += createDetailSection(
+                'Q4 End Goal',
+                selectedPriority.endGoal
+            );
+            
+            // 3. Known Unknowns
+            panelContent.innerHTML += createDetailSection(
+                'Known Unknowns',
+                selectedPriority.knownUnknowns
+            );
+
+            // 4. What is our PO focus in Q4? (Accordions)
+            const poFocusHtml = document.createElement('div');
+            poFocusHtml.className = 'pt-4';
+            poFocusHtml.innerHTML = '<h3 class="text-xl font-bold text-gray-900 mb-3">What is our PO Focus in Q4?</h3>';
+
+            selectedPriority.poFocus.forEach((focus, index) => {
+                const parts = focus.split(': ', 2);
+                const focusTitle = parts[0] + (parts.length > 1 ? ':' : '');
+                const focusDetail = parts.length > 1 ? parts[1] : focus;
+                const accordionId = `accordion-${id}-${index}`;
+
+                const accordionItem = document.createElement('div');
+                accordionItem.className = 'border-b border-gray-200';
+                accordionItem.innerHTML = `
+                    <!-- Accordion Header (Clickable Dropdown) -->
+                    <button id="header-${accordionId}" class="flex justify-between items-center w-full p-3 font-medium text-left text-gray-800 hover:bg-gray-50 focus:outline-none rounded-md" onclick="toggleAccordion('${accordionId}')">
+                        <span class="font-semibold text-base text-gray-900">${focusTitle}</span>
+                        <svg id="icon-${accordionId}" class="w-4 h-4 transform transition-transform duration-300 dynamic-text-color" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <!-- Accordion Content -->
+                    <div id="${accordionId}" class="accordion-content bg-white">
+                        <p class="p-3 text-gray-600 border-l-4 dynamic-border-color ml-3 mb-2">${focusDetail}</p>
+                    </div>
+                `;
+                poFocusHtml.appendChild(accordionItem);
+            });
+
+            panelContent.appendChild(poFocusHtml);
+        }
+
+        /**
+         * Toggles the open/close state of an accordion.
+         * @param {string} id - The ID of the accordion content div.
+         */
+        window.toggleAccordion = function(id) {
+            const content = document.getElementById(id);
+            const icon = document.getElementById(`icon-${id}`);
+
+            if (content.classList.contains('open')) {
+                content.classList.remove('open');
+                content.style.maxHeight = 0;
+                icon.classList.remove('rotate-180');
+            } else {
+                // Close all other open accordions in this panel
+                document.querySelectorAll('.accordion-content.open').forEach(openContent => {
+                    openContent.style.maxHeight = 0;
+                    openContent.classList.remove('open');
+                    const openIconId = `icon-${openContent.id}`;
+                    document.getElementById(openIconId)?.classList.remove('rotate-180');
+                });
+                
+                // Open the clicked accordion
+                content.classList.add('open');
+                // Calculate and set the correct max-height
+                content.style.maxHeight = content.scrollHeight + "px";
+                icon.classList.add('rotate-180');
+            }
+        };
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', renderPriorityList);
+    </script>
+</body>
+</html>
